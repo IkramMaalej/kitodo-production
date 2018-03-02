@@ -294,36 +294,21 @@ public abstract class SearchService<T extends BaseIndexedBean, S extends BaseDTO
      */
     public void save(T baseIndexedBean) throws DataException {
         try {
-            baseIndexedBean.setIndexAction(IndexAction.INDEX);
-            T savedBean = saveToDatabase(baseIndexedBean);
-            saveToIndex(savedBean);
-            manageDependenciesForIndex(savedBean);
-            waitForIndexUpdate();
-            savedBean.setIndexAction(IndexAction.DONE);
-            saveToDatabase(savedBean);
+            synchronized (this) {
+                baseIndexedBean.setIndexAction(IndexAction.INDEX);
+                T savedBean = saveToDatabase(baseIndexedBean);
+                saveToIndex(savedBean);
+                manageDependenciesForIndex(savedBean);
+                baseIndexedBean.setIndexAction(IndexAction.DONE);
+                saveToDatabase(baseIndexedBean);
+            }
         } catch (DAOException e) {
             logger.debug(e);
             throw new DataException(e);
-        } catch (CustomResponseException | IOException e) {
-            int count = 0;
-            int maxTries = 5;
-            while (true) {
-                try {
-                    saveToIndex(baseIndexedBean);
-                    manageDependenciesForIndex(baseIndexedBean);
-                    baseIndexedBean.setIndexAction(IndexAction.DONE);
-                    saveToDatabase(baseIndexedBean);
-                    break;
-                } catch (CustomResponseException | IOException ee) {
-                    logger.debug(ee);
-                    if (++count >= maxTries) {
-                        throw new DataException(ee);
-                    }
-                } catch (DAOException daoe) {
-                    logger.debug("Index was updated but flag in database not... " + daoe.getMessage());
-                    throw new DataException(daoe);
-                }
-            }
+        } catch (CustomResponseException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -352,43 +337,20 @@ public abstract class SearchService<T extends BaseIndexedBean, S extends BaseDTO
      */
     public void remove(T baseIndexedBean) throws DataException {
         try {
-            baseIndexedBean.setIndexAction(IndexAction.DELETE);
-            saveToDatabase(baseIndexedBean);
-            removeFromIndex(baseIndexedBean);
-            manageDependenciesForIndex(baseIndexedBean);
-            waitForIndexUpdate();
-            removeFromDatabase(baseIndexedBean);
+            synchronized (this) {
+                baseIndexedBean.setIndexAction(IndexAction.DELETE);
+                saveToDatabase(baseIndexedBean);
+                manageDependenciesForIndex(baseIndexedBean);
+                removeFromIndex(baseIndexedBean);
+                removeFromDatabase(baseIndexedBean);
+            }
         } catch (DAOException e) {
             logger.debug(e);
             throw new DataException(e);
-        } catch (CustomResponseException | IOException e) {
-            int count = 0;
-            int maxTries = 5;
-            while (true) {
-                try {
-                    removeFromIndex(baseIndexedBean);
-                    removeFromDatabase(baseIndexedBean);
-                    break;
-                } catch (CustomResponseException | IOException ee) {
-                    logger.debug(ee);
-                    if (++count >= maxTries) {
-                        throw new DataException(ee);
-                    }
-                } catch (DAOException daoe) {
-                    logger.debug("Remove from index was successful but..." + daoe.getMessage());
-                    throw new DataException(daoe);
-                }
-            }
-        }
-    }
-
-    // TODO: search for some more elegant way
-    private void waitForIndexUpdate() {
-        try {
-            Thread.sleep(500);
-        } catch (InterruptedException e) {
-            logger.error(e);
-            Thread.currentThread().interrupt();
+        } catch (CustomResponseException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 

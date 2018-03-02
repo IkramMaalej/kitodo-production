@@ -393,4 +393,20 @@ public abstract class BaseDAO<T extends BaseBean> implements Serializable {
         }
         session.update(object);
     }
+
+    /**
+     * evict of the object from the session.
+     *
+     * @param object
+     *            to evict
+     */
+    void evictObject(T object) {
+        Session session = HibernateHelper.getHibernateSession();
+        if (session == null) {
+            session = HibernateUtil.getSessionFactory().openSession();
+            session.evict(object);
+            session.close();
+        }
+        session.evict(object);
+    }
 }

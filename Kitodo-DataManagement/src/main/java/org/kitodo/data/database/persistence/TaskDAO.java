@@ -15,6 +15,7 @@ import java.util.List;
 
 import org.kitodo.data.database.beans.Task;
 import org.kitodo.data.database.exceptions.DAOException;
+import org.kitodo.data.database.helper.enums.IndexAction;
 
 public class TaskDAO extends BaseDAO<Task> {
 
@@ -42,6 +43,9 @@ public class TaskDAO extends BaseDAO<Task> {
     @Override
     public Task save(Task task) throws DAOException {
         storeObject(task);
+        if (task.getIndexAction().equals(IndexAction.DONE)) {
+            evictObject(task);
+        }
         return retrieveObject(Task.class, task.getId());
     }
 
