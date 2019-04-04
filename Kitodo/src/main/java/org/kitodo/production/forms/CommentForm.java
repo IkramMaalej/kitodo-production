@@ -11,6 +11,7 @@
 
 package org.kitodo.production.forms;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -181,7 +182,7 @@ public class CommentForm extends BaseForm {
     public void solveProblem(Comment comment) {
         try {
             ServiceManager.getWorkflowControllerService().solveProblem(comment);
-        } catch (DataException e) {
+        } catch (DataException | IOException e) {
             Helper.setErrorMessage("SolveProblem", logger, e);
         }
         refreshProcess(this.process);

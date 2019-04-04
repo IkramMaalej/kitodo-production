@@ -346,19 +346,11 @@ public class WorkflowControllerService {
      * @param comment
      *              as Comment object
      */
-    public void solveProblem(Comment comment) throws DataException {
+    public void solveProblem(Comment comment) throws DataException, IOException {
         Date date = new Date();
         Task currentTask = comment.getCorrectionTask();
         this.webDav.uploadFromHome(currentTask.getProcess());
-        currentTask.setProcessingStatus(TaskStatus.DONE);
-        currentTask.setProcessingEnd(date);
-        currentTask.setEditType(TaskEditType.MANUAL_SINGLE);
-        currentTask.setProcessingTime(date);
-        taskService.replaceProcessingUser(currentTask, getCurrentUser());
-        taskService.save(currentTask);
-        Task correctionTask = comment.getCurrentTask();
-        closeTasksBetweenCurrentAndCorrectionTask(currentTask, correctionTask, date);
-        openTaskForProcessing(correctionTask);
+        close(currentTask);
         comment.setCorrected(Boolean.TRUE);
         comment.setCorrectionDate(date);
         try {
