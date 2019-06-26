@@ -223,7 +223,7 @@ class KeyView extends AbstractKeyView<UniversalKey> implements DatesSimpleMetada
                         return false;
                     }
             }
-        } catch (URISyntaxException | DateTimeParseException | NumberFormatException e) {
+        } catch (URISyntaxException | DateTimeParseException | NumberFormatException | NullPointerException e) {
             return false;
         }
 

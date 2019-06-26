@@ -25,6 +25,7 @@ import org.kitodo.api.dataformat.MediaUnit;
 import org.kitodo.production.helper.Helper;
 import org.kitodo.production.metadata.InsertionPosition;
 import org.kitodo.production.metadata.MetadataEditor;
+import org.primefaces.model.TreeNode;
 
 public class AddMediaUnitDialog {
     private final DataEditorForm dataEditor;
@@ -47,10 +48,11 @@ public class AddMediaUnitDialog {
      */
     public void addMediaUnit() {
         if (dataEditor.getSelectedMediaUnit().isPresent()) {
-            MetadataEditor.addMediaUnit(selectedType, dataEditor.getWorkpiece(),
+             MediaUnit mediaUnit = MetadataEditor.addMediaUnit(selectedType, dataEditor.getWorkpiece(),
                     dataEditor.getSelectedMediaUnit().get(),
                     selectedPosition);
             dataEditor.refreshStructurePanel();
+            dataEditor.getStructurePanel().selectMediaUnit(mediaUnit);
         } else {
             Helper.setErrorMessage("No media unit selected!");
         }

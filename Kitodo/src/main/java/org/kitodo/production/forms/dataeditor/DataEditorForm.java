@@ -46,6 +46,7 @@ import org.kitodo.data.database.exceptions.DAOException;
 import org.kitodo.data.exceptions.DataException;
 import org.kitodo.production.helper.Helper;
 import org.kitodo.production.services.ServiceManager;
+import org.primefaces.PrimeFaces;
 
 @Named("DataEditorForm")
 @SessionScoped
@@ -286,6 +287,9 @@ public class DataEditorForm implements RulesetSetupInterface, Serializable {
         } catch (InvalidMetadataValueException | IOException | NoSuchMetadataFieldException | DAOException
                 | DataException e) {
             Helper.setErrorMessage(e.getLocalizedMessage(), logger, e);
+            logger.error(e.getLocalizedMessage());
+            PrimeFaces.current().executeScript("PF('sticky-notifications').removeAll();");
+            PrimeFaces.current().ajax().update("notifications");
             return null;
         }
     }
@@ -438,8 +442,12 @@ public class DataEditorForm implements RulesetSetupInterface, Serializable {
         this.process = process;
     }
 
-    void switchStructure(Object treeNodeData) throws InvalidMetadataValueException, NoSuchMetadataFieldException {
-        metadataPanel.preserveLogical();
+    void switchStructure(Object treeNodeData) throws NoSuchMetadataFieldException {
+        try {
+            metadataPanel.preserveLogical();
+        } catch (InvalidMetadataValueException e) {
+            logger.error(e.getLocalizedMessage());
+        }
         metadataPanel.showLogical(structurePanel.getSelectedStructure());
         if (Objects.nonNull(treeNodeData) && treeNodeData instanceof  StructureTreeNode) {
             StructureTreeNode structureTreeNode = (StructureTreeNode) treeNodeData;
@@ -465,8 +473,12 @@ public class DataEditorForm implements RulesetSetupInterface, Serializable {
         }
     }
 
-    void switchMediaUnit() throws InvalidMetadataValueException, NoSuchMetadataFieldException {
-        metadataPanel.preservePhysical();
+    void switchMediaUnit() throws NoSuchMetadataFieldException {
+        try {
+            metadataPanel.preservePhysical();
+        } catch (InvalidMetadataValueException e) {
+            logger.error(e.getLocalizedMessage());
+        }
         metadataPanel.showPhysical(structurePanel.getSelectedMediaUnit());
         if (structurePanel.getSelectedMediaUnit().isPresent()) {
             // update gallery
