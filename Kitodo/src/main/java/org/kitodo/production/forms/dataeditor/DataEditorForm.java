@@ -446,7 +446,7 @@ public class DataEditorForm implements RulesetSetupInterface, Serializable {
         try {
             metadataPanel.preserveLogical();
         } catch (InvalidMetadataValueException e) {
-            logger.error(e.getLocalizedMessage());
+            logger.info(e.getLocalizedMessage());
         }
         metadataPanel.showLogical(structurePanel.getSelectedStructure());
         if (Objects.nonNull(treeNodeData) && treeNodeData instanceof  StructureTreeNode) {
@@ -477,7 +477,7 @@ public class DataEditorForm implements RulesetSetupInterface, Serializable {
         try {
             metadataPanel.preservePhysical();
         } catch (InvalidMetadataValueException e) {
-            logger.error(e.getLocalizedMessage());
+            logger.info(e.getLocalizedMessage());
         }
         metadataPanel.showPhysical(structurePanel.getSelectedMediaUnit());
         if (structurePanel.getSelectedMediaUnit().isPresent()) {

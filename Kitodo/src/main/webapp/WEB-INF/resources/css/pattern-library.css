@@ -100,6 +100,11 @@ input.ui-state-error {
     box-shadow: 0 0 0;
 }
 
+.ui-accordion .ui-state-default,
+.ui-fieldset .ui-state-default {
+    background: var(--cloudy-gray);
+}
+
 .ui-selectcheckboxmenu .ui-selectcheckboxmenu-trigger,
 .timeline-content .ui-state-default {
     background: var(--blue);
@@ -637,6 +642,40 @@ button.ui-datepicker-trigger.ui-button-icon-only::before {
     border-color: var(--medium-gray);
 }
 
+.ui-spinner .ui-spinner-button {
+    background: transparent;
+    height: 50%;
+}
+
+.ui-spinner .ui-spinner-button::after {
+    color: var(--blue);
+    display: block;
+    font-family: FontAwesome;
+    height: calc(var(--input-height) / 2);
+    line-height: calc(var(--input-height) / 2);
+    padding-right: var(--input-padding);
+}
+
+.ui-spinner .ui-spinner-input.ui-state-focus ~ .ui-spinner-button::after {
+    color: var(--pure-white);
+}
+
+.ui-spinner .ui-spinner-up::after {
+    content: "\f0d8";
+}
+
+.ui-spinner .ui-spinner-down::after {
+    content: "\f0d7";
+}
+
+.ui-spinner .ui-spinner-button.ui-state-hover {
+    background: transparent;
+}
+
+.ui-spinner .ui-spinner-button > span {
+    display: none;
+}
+
 .ui-tree {
     width: 100%;
 }
@@ -999,11 +1038,6 @@ Popup dialogs
 
 #loadingScreen i.fa-spinner {
     color: var(--blue);
-}
-
-.ui-accordion .ui-state-default,
-.ui-fieldset .ui-state-default {
-    background: var(--cloudy-gray);
 }
 
 .ui-tabs.ui-widget-content,
